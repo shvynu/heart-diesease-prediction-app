@@ -23,14 +23,14 @@ def load_model(model_path):
 
 # Getting the working directory of the script
 working_dir = os.path.dirname(os.path.abspath(__file__))
-model_path = os.path.join(working_dir, 'saved_models', 'heart_disease_model.sav')
+model_path = os.path.join(working_dir, 'heart_disease_model.sav')
 
 # Loading the saved model
 heart_disease_model = load_model(model_path)
 
 # Sidebar for navigation
 with st.sidebar:
-    selected = option_menu('Multiple Disease Prediction System',
+    selected = option_menu('Heart Disease Prediction System',
                            ['Heart Disease Prediction'],
                            menu_icon='hospital-fill',
                            icons=['heart'],
@@ -109,4 +109,3 @@ if selected == 'Heart Disease Prediction':
             st.error(f"Input error: {ve}")
         except Exception as e:
             st.error(f"An error occurred during prediction: {e}")
-
