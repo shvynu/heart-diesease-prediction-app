@@ -1,82 +1,95 @@
+import os
 import pickle
 import streamlit as st
 from streamlit_option_menu import option_menu
 
+# Set page configuration
+st.set_page_config(page_title="heart diseases prediction app",
+                   layout="wide",
+                   page_icon="🥼🩺")
+
+    
+# getting the working directory of the main.py
+working_dir = os.path.dirname(os.path.abspath(__file__))
 
 # loading the saved models
 
-heart_model = pickle.load(open('C:/Users/Rinku/Desktop/heart_disease_dataset/heart_model.sav','rb'))
-
-
+heart_disease_model = pickle.load(open(f'{working_dir}/saved_models/heart_disease_model.sav', 'rb'))
 
 # sidebar for navigation
 with st.sidebar:
-    
-    selected = option_menu('Heart Prediction System',
-                          
-                          ['Heart Disease Prediction'],
-                          icons=['heart'],
-                          default_index=0)
-    
-    
-# Diabetes Prediction Page
-if (selected == 'Heart Disease Prediction'):
-    
+    selected = option_menu('Multiple Disease Prediction System',
+
+                           ['Heart Disease Prediction',
+                            ],
+                           menu_icon='hospital-fill',
+                           icons=['heart'],
+                           default_index=0)
+
+# Heart Disease Prediction Page
+if selected == 'Heart Disease Prediction':
+
     # page title
-    st.title('Heart Prediction using ML')
-    
-    
-    # getting the input data from the user age anaemia creatinine_phosphokinase diabetes ejection_fraction high_blood_pressure platelets serum_creatinine serum_sodium sex smoking time
+    st.title('Heart Disease Prediction using ML')
+
     col1, col2, col3 = st.columns(3)
-    
+
     with col1:
-        age = st.text_input('enter your age 1 to 100')
-        
+        age = st.text_input('Age')
+
     with col2:
-        anaemia = st.text_input('if you are suffering from anamemia enter 1 for yes and 0 for no')
-    
+        sex = st.text_input('Sex')
+
     with col3:
-        creatinine_phosphokinase = st.text_input('enter level of creatinine_phosphokinase')
-    
+        cp = st.text_input('Chest Pain types')
+
     with col1:
-        diabetes = st.text_input('if patient is suffering from diabetes 1 for yes 0 for no')
-    
+        trestbps = st.text_input('Resting Blood Pressure')
+
     with col2:
-        ejection_fraction = st.text_input('enter level of ejection_fraction')
-    
+        chol = st.text_input('Serum Cholestoral in mg/dl')
+
     with col3:
-        hbp = st.text_input('if patient is suffering from high blood pressure 1 for yes 0 for no')
-    
+        fbs = st.text_input('Fasting Blood Sugar > 120 mg/dl')
+
     with col1:
-        platelets = st.text_input('enter platelets count')
-    
+        restecg = st.text_input('Resting Electrocardiographic results')
+
     with col2:
-        serum_creatinine = st.text_input('enter level of serum createnine ')
-    
+        thalach = st.text_input('Maximum Heart Rate achieved')
+
     with col3:
-        serum_sodium = st.text_input('enter level of serum sodium')
-    
+        exang = st.text_input('Exercise Induced Angina')
+
     with col1:
-        sex = st.text_input("enter sex 1 for male 0 for female")
-    
+        oldpeak = st.text_input('ST depression induced by exercise')
+
     with col2:
-        smoking = st.text_input("if patient use to smoke 0 for no 1 for yes ")
-    
+        slope = st.text_input('Slope of the peak exercise ST segment')
+
     with col3:
-        time = st.text_input("enter follow-up period in days from 0 to 365")
-    
-    
+        ca = st.text_input('Major vessels colored by flourosopy')
+
+    with col1:
+        thal = st.text_input('thal: 0 = normal; 1 = fixed defect; 2 = reversable defect')
+
     # code for Prediction
     heart_diagnosis = ''
-    
+
     # creating a button for Prediction
-    
-    if st.button('heart Test Result'):
-        heart_prediction = heart_model.predict([[age, anaemia ,creatinine_phosphokinase, diabetes, ejection_fraction, hbp, platelets, serum_creatinine, serum_sodium, sex, smoking, time]])
-        
-        if (heart_prediction[0] == 1):
-          heart_diagnosis = 'The person is suffering from heart diseases'
+
+    if st.button('Heart Disease Test Result'):
+
+        user_input = [age, sex, cp, trestbps, chol, fbs, restecg, thalach, exang, oldpeak, slope, ca, thal]
+
+        user_input = [float(x) for x in user_input]
+
+        heart_prediction = heart_disease_model.predict([user_input])
+
+        if heart_prediction[0] == 1:
+            heart_diagnosis = 'The person is prone to heart disease'
         else:
-          heart_diagnosis = 'The person is not suffering from heart diseases'
+            heart_diagnosis = 'The person does not prone to have any heart disease'
 
     st.success(heart_diagnosis)
+
